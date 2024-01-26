@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO-DO APP</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: linear-gradient(45deg, #a6c0fe, #8ca6fc);
+            margin: 0;
+            padding: 20px;
+            height: 100%;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 600px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #4285f4;
+            font-weight: bold;
+        }
+
+        .task-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .task-input i {
+            font-size: 24px;
+            margin-right: 10px;
+            color: #4285f4;
+        }
+
+        .task-input input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #4285f4;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        #addTaskBtn {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #4285f4;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        #addTaskBtn:hover {
+            background-color: #0d47a1;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+        }
+
+        .filters span {
+            cursor: pointer;
+            padding: 10px;
+            margin: 0 5px;
+            border: 1px solid #4285f4;
+            border-radius: 4px;
+            color: #4285f4;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .filters span.active {
+            background-color: #4285f4;
+            color: #fff;
+        }
+
+        .task-box {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #4285f4;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .task label {
+            display: flex;
+            align-items: center;
+        }
+
+        .task p {
+            margin: 0;
+            flex-grow: 1;
+            padding-left: 10px;
+            color: #4c4c4c;
+        }
+
+        .checked {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        .settings {
+            position: relative;
+        }
+
+        .uil-ellipsis-h {
+            cursor: pointer;
+        }
+
+        .task-menu {
+            position: absolute;
+            top: 20px;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #4285f4;
+            border-radius: 4px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            list-style: none;
+            padding: 0;
+            display: none;
+        }
+
+        .task-menu li {
+            cursor: pointer;
+            padding: 10px;
+        }
+
+        .task-menu li:hover {
+            background-color: #f4f4f4;
+        }
+
+        .show {
+            display: block;
+        }
+
+        .clear-btn {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #4285f4;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            float: right;
+        }
+
+        .clear-btn.active {
+            background-color: #0d47a1;
+        }
+
+        .clear-btn:hover {
+            background-color: #0d47a1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <h1>TO-DO APP</h1>
+        <div class="task-input">
+            <i class="fas fa-check-circle"></i>
+            <input type="text" id="taskInput" placeholder="Add a new task">
+            <button id="addTaskBtn" onclick="addtask()">Add Task</button>
+        </div>
+        <div class="controls">
+            <div class="filters">
+                <span class="active" id="all">All Tasks</span>
+                <span id="pending">Remaining</span>
+                <span id="completed">Finished</span>
+            </div>
+            <button id="printBtn" onclick="printDataToConsole()"
+                style="padding: 10px 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Save
+                Data</button>
+            <div id="messageContainer" class="message-container"></div>
+        </div>
+        <ul class="task-box"></ul>
+        <button id="logoutBtn" onclick="window.location.href = '/logout'" style="padding: 10px 20px; background-color: #dc3545; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Logout</button>
+        <button class="clear-btn">Clear all</button>
+
+    </div>
+
+    <style>
+        .message-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 123, 255, 0.9);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            animation: floatMessage 3s ease-in-out;
+            visibility: hidden;
+        }
+
+        @keyframes floatMessage {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, 100%);
+            }
+
+            10% {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            90% {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, 150%);
+                visibility: hidden;
+            }
+        }
+    </style>
+
+
+    <script>
+        function showMessage() {
+            var messageContainer = document.getElementById("messageContainer");
+            messageContainer.innerHTML = "Data Saved!";
+            messageContainer.style.visibility = "visible";
+
+            setTimeout(function () {
+                messageContainer.innerHTML = "";
+                messageContainer.style.visibility = "hidden";
+            }, 3000);
+        }
+    </script>
+
+
+
+    <script>
+        let editId, isEditTask = false;
+
+
+        const data = `{{ data | tojson | safe }}`;
+
+        const todos = JSON.parse(data).tasks;
+
+        const taskInput = document.getElementById("taskInput");
+        const filters = document.querySelectorAll(".filters span");
+        const clearAll = document.querySelector(".clear-btn");
+        const taskBox = document.querySelector(".task-box");
+
+        filters.forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelector("span.active").classList.remove("active");
+                btn.classList.add("active");
+                showTodo(btn.id);
+            });
+        });
+
+
+        function showTodo(filter) {
+            let liTag = "";
+            if (todos.length > 0) {
+                todos.forEach((todo, id) => {
+                    let completed = todo.done ? "checked" : "";
+                    if (filter === "all" || (filter === "pending" && !todo.done) || (filter === "completed" && todo.done)) {
+                        liTag += `<li class="task">
+                        <label for="${id}">
+                          <input onclick="updateStatus(this)" type="checkbox" id="${id}" ${completed}>
+                          <p class="${completed ? "checked" : ""}">${todo.name}</p>
+                        </label>
+                        <div class="settings">
+                          <i onclick="showMenu(this)" class="uil uil-ellipsis-h"></i>
+                          <ul class="task-menu">
+                            <li onclick='editTask(${id}, "${todo.name}")'><i class="uil uil-pen"></i>Edit</li>
+                            <li onclick='deleteTask(${id}, "${filter}")'><i class="uil uil-trash"></i>Delete</li>
+                          </ul>
+                        </div>
+                      </li>`;
+                    }
+                });
+            }
+            taskBox.innerHTML = liTag || `<span>No task here!</span>`;
+            updateClearButtonState();
+        }
+
+        function updateClearButtonState() {
+            clearAll.classList.toggle("active", todos.length > 0);
+        }
+
+        function showMenu(selectedTask) {
+            let menuDiv = selectedTask.parentElement.lastElementChild;
+            menuDiv.classList.add("show");
+            document.addEventListener("click", e => {
+                if (e.target.tagName !== "I" || e.target !== selectedTask) {
+                    menuDiv.classList.remove("show");
+                }
+            });
+        }
+
+        function updateStatus(selectedTask) {
+            let taskName = selectedTask.parentElement.lastElementChild;
+            if (selectedTask.checked) {
+                taskName.classList.add("checked");
+                todos[selectedTask.id].done = true;
+            } else {
+                taskName.classList.remove("checked");
+                todos[selectedTask.id].done = false;
+            }
+        }
+
+        function editTask(taskId, textName) {
+            editId = taskId;
+            isEditTask = true;
+            taskInput.value = textName;
+            taskInput.focus();
+            taskInput.classList.add("active");
+        }
+
+        function deleteTask(deleteId, filter) {
+            isEditTask = false;
+            todos.splice(deleteId, 1);
+            showTodo(filter);
+        }
+
+        clearAll.addEventListener("click", () => {
+            isEditTask = false;
+            todos.splice(0, todos.length);
+            showTodo();
+        });
+
+        function addtask() {
+            const userTask = taskInput.value.trim();
+            if (userTask) {
+                if (!isEditTask) {
+                    todos.push({ name: userTask, done: false });
+                } else {
+                    isEditTask = false;
+                    todos[editId].name = userTask;
+                }
+                taskInput.value = "";
+                showTodo(document.querySelector("span.active").id);
+            }
+        }
+
+        taskInput.addEventListener("keyup", (e) => {
+            if (e.key === "Enter") {
+                addtask();
+            }
+        });
+    </script>
+    <script>
+        function printDataToConsole() {
+            fetch('/print_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(todos),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    showMessage();
+                })
+                .catch(error => {
+                });
+        }
+    </script>
+
+
+</body>
+
+</html>
